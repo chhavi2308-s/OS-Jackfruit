@@ -4,7 +4,7 @@ A lightweight Linux container runtime in C with a long-running supervisor and a 
 
 ---
 
-# 1. Team Information
+# 👩‍💻 Team Information
 
 ## Team Members
 
@@ -14,6 +14,7 @@ A lightweight Linux container runtime in C with a long-running supervisor and a 
 **Member 2:** Chetha Samrutha
 **SRN:** PES1UG24CS131
 
+---
 ## 📌 Overview
 
 This project implements a **lightweight container runtime** in C using core Linux system calls. It demonstrates how containers can be built from scratch using process creation, filesystem isolation, and basic supervision techniques.

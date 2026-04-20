@@ -191,6 +191,7 @@ The Linux scheduler efficiently distributes CPU time based on process behavior, 
 
 6. Scheduling Experiment (top)
 <img width="741" height="163" alt="image" src="https://github.com/user-attachments/assets/8f1d5b7d-abb5-4aa9-a8d5-a5d23cc10b17" />
+<img width="740" height="449" alt="image" src="https://github.com/user-attachments/assets/2be06829-0882-4d18-9946-788bcd38aa00" />
 
 7. Logging (cat container.log)
 <img width="915" height="420" alt="image" src="https://github.com/user-attachments/assets/88f50533-0418-4951-ab86-cea13e54dff5" />

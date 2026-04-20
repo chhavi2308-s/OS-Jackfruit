@@ -198,6 +198,8 @@ The Linux scheduler efficiently distributes CPU time based on process behavior, 
 
 8. Container Stop
 <img width="914" height="509" alt="image" src="https://github.com/user-attachments/assets/7689a8b3-0240-4489-8e0b-00d6d5e45fef" />
+<img width="383" height="504" alt="image" src="https://github.com/user-attachments/assets/4303813c-2067-40e6-b151-e6657fc0fb7b" />
+
 
 ---
 

@@ -174,14 +174,29 @@ The Linux scheduler efficiently distributes CPU time based on process behavior, 
 
 ## 📸 Screenshots Included
 
-* Build success
-* Container start
-* Multi-container (`ps`) output
-* CPU workload execution
-* IO workload execution
-* Scheduling (`top`)
-* Logging (`cat container.log`)
-* Container stop
+1. Build Success
+   <img width="759" height="262" alt="image" src="https://github.com/user-attachments/assets/37aa7d0e-e46b-471a-ab70-da6a97599e42" />
+
+2. Container Start
+<img width="916" height="112" alt="image" src="https://github.com/user-attachments/assets/02836471-0b63-4e73-a915-72a374a4d204" />
+
+3. Multi-Container (ps) Output
+<img width="900" height="94" alt="image" src="https://github.com/user-attachments/assets/296d7547-1bfb-4d3c-bd4e-a57cbbec1673" />
+
+4. CPU Workload Execution
+<img width="913" height="112" alt="image" src="https://github.com/user-attachments/assets/2e6f6c69-2839-4e67-a6db-5dab401fe75e" />
+
+5. IO Workload Execution
+<img width="902" height="73" alt="image" src="https://github.com/user-attachments/assets/972bd643-ecc1-46da-bfc7-8a2967418723" />
+
+6. Scheduling Experiment (top)
+<img width="741" height="163" alt="image" src="https://github.com/user-attachments/assets/8f1d5b7d-abb5-4aa9-a8d5-a5d23cc10b17" />
+
+7. Logging (cat container.log)
+<img width="915" height="420" alt="image" src="https://github.com/user-attachments/assets/88f50533-0418-4951-ab86-cea13e54dff5" />
+
+8. Container Stop
+<img width="914" height="509" alt="image" src="https://github.com/user-attachments/assets/7689a8b3-0240-4489-8e0b-00d6d5e45fef" />
 
 ---
 

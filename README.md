@@ -103,7 +103,7 @@ dmesg | grep container_monitor | tail -5
 
 **Screenshot 2 — ps output showing container metadata**
 <img width="758" height="378" alt="image" src="https://github.com/user-attachments/assets/5a09558a-6065-4a21-b30b-d3de9a67f1b2" />
- c<img width="756" height="113" alt="image" src="https://github.com/user-attachments/assets/64696295-c71e-4711-8180-0f0874cbb6bf" />
+<img width="756" height="113" alt="image" src="https://github.com/user-attachments/assets/64696295-c71e-4711-8180-0f0874cbb6bf" />
 
 
 **Screenshot 3 — Logging pipeline proof**

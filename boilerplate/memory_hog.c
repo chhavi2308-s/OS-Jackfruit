@@ -1,17 +1,46 @@
-#include <linux/module.h>
-#include <linux/kernel.h>
-#include <linux/init.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
 
-MODULE_LICENSE("GPL");
+static size_t parse_size_mb(const char *arg, size_t fallback)
+{
+    char *end = NULL;
+    unsigned long value = strtoul(arg, &end, 10);
 
-static int __init monitor_init(void) {
-    printk(KERN_INFO "Container Monitor Loaded\n");
+    if (!arg || *arg == '\0' || (end && *end != '\0') || value == 0)
+        return fallback;
+    return (size_t)value;
+}
+
+static useconds_t parse_sleep_ms(const char *arg, useconds_t fallback)
+{
+    char *end = NULL;
+    unsigned long value = strtoul(arg, &end, 10);
+
+    if (!arg || *arg == '\0' || (end && *end != '\0'))
+        return fallback;
+    return (useconds_t)(value * 1000U);
+}
+
+int main(int argc, char *argv[])
+{
+    const size_t chunk_mb = (argc > 1) ? parse_size_mb(argv[1], 8) : 8;
+    const useconds_t sleep_us = (argc > 2) ? parse_sleep_ms(argv[2], 1000U) : 1000U * 1000U;
+    const size_t chunk_bytes = chunk_mb * 1024 * 1024;
+
+    printf("memory_hog: allocating %zu MiB every %u ms\n", chunk_mb, sleep_us / 1000);
+
+    while (1) {
+        char *ptr = malloc(chunk_bytes);
+        if (!ptr) {
+            perror("malloc");
+            break;
+        }
+        memset(ptr, 0, chunk_bytes);
+        printf("memory_hog: touched %zu MiB\n", chunk_mb);
+        usleep(sleep_us);
+    }
+
     return 0;
 }
-
-static void __exit monitor_exit(void) {
-    printk(KERN_INFO "Container Monitor Removed\n");
-}
-
-module_init(monitor_init);
-module_exit(monitor_exit);

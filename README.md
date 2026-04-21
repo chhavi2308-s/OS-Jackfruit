@@ -1,265 +1,100 @@
-# 🐳 Lightweight Multi-Container Runtime in C
+Project Jackfruit: Lightweight Container Engine & Monitor
+🏗 Overview
+Project Jackfruit is a simplified containerization engine designed to demonstrate core operating system concepts, including process isolation, filesystem namespacing, resource monitoring via kernel modules, and CPU scheduling using nice values.
 
-A lightweight Linux container runtime in C with a long-running supervisor and a kernel-space memory monitor.
+The system consists of two primary components:
 
----
+The Supervisor: A background daemon that manages the lifecycle of containers and enforces resource limits.
 
-# 👩‍💻 Team Information
+The Kernel Monitor: A custom Linux kernel module (monitor.ko) that tracks memory usage (RSS) and enforces soft/hard limits through SIGKILL signals.
 
-## Team Members
+🚀 Key Features
+Filesystem Isolation: Uses chroot logic to isolate containers within specific root filesystems (rootfs-alpha, rootfs-beta).
 
-**Member 1:** Chhavi S Wadhwa
-**SRN:** PES1UG24CS132
+Resource Monitoring: Real-time tracking of memory consumption.
 
-**Member 2:** Chetha Samrutha
-**SRN:** PES1UG24CS131
+Resource Enforcement: * Soft Limit: Logs a warning when a container exceeds a specific threshold.
 
----
-## 📌 Overview
+Hard Limit: Terminates the process once it hits a critical memory ceiling.
 
-This project implements a **lightweight container runtime** in C using core Linux system calls. It demonstrates how containers can be built from scratch using process creation, filesystem isolation, and basic supervision techniques.
+Priority Scheduling: Support for nice value adjustments to demonstrate CPU time allocation differences between "fast" and "slow" processes.
 
-The system supports running **multiple containers**, executing workloads inside them, monitoring their execution, and capturing logs.
+Clean Teardown: Automated cleanup of all child processes and socket files upon supervisor exit.
 
----
+🛠 Installation & Setup
+1. Prerequisites
+Ensure you are running on a Linux environment (tested on Ubuntu 22.04) with kernel headers installed.
 
-## 🎯 Objectives
+2. Compilation
+Compile the engine, the helper binaries (cpu_hog, memory_hog), and the kernel module using the provided Makefile:
 
-* Understand how containers work internally
-* Implement process isolation using Linux primitives
-* Run and manage multiple containers
-* Execute and analyze different workloads
-* Capture and log container output
-
----
-
-## ⚙️ Key Features
-
-* ✅ Multi-container support
-* ✅ CLI-based container management (`start`, `stop`, `ps`)
-* ✅ Filesystem isolation using `chroot()`
-* ✅ Process creation using `fork()`
-* ✅ Workload execution inside containers
-* ✅ Logging using `dup2()` redirection
-* ✅ Basic container lifecycle management
-
----
-
-## 🏗️ System Architecture
-
-### 🔹 Container Creation
-
-1. `fork()` creates a child process
-2. `chroot()` changes root filesystem
-3. `chdir("/")` ensures correct working directory
-4. `exec()` runs the container process
-
----
-
-### 🔹 Container Management
-
-* **start** → creates container
-* **ps** → lists containers (from file storage)
-* **stop** → terminates container
-
----
-
-### 🔹 Logging Mechanism
-
-* Standard output (`stdout`) and error (`stderr`) are redirected
-* `dup2()` is used to write logs into `container.log`
-* `fflush()` ensures real-time logging
-
----
-
-## 🖥️ Technologies Used
-
-* C Programming
-* Linux System Calls
-* VirtualBox (Ubuntu VM)
-* GCC Compiler
-
----
-
-## 🚀 How to Run
-
-### 🔹 1. Build the Project
-
-```bash
+Bash
+make clean
 make
-```
+3. Loading the Kernel Module
+The monitor must be loaded into the kernel before starting the supervisor:
 
----
-
-### 🔹 2. Load Kernel Module
-
-```bash
+Bash
 sudo insmod monitor.ko
-```
+# Verify the major number and create the device node
+MAJOR=$(awk '$2=="monitor" {print $1}' /proc/devices)
+sudo mknod /dev/container_monitor c $MAJOR 0
+sudo chmod 666 /dev/container_monitor
+💻 Usage Guide
+Starting the Supervisor
+Open a dedicated terminal and start the core management process:
 
----
+Bash
+sudo ./engine supervisor ./rootfs-base
+Launching Containers
+In a separate terminal, use the start command:
 
-### 🔹 3. Start Containers
+Bash
+# General Syntax
+sudo ./engine start [name] [rootfs_path] [executable] [args...] [--nice value]
 
-```bash
-sudo ./engine start alpha ../rootfs-alpha /bin/sh
-sudo ./engine start beta ../rootfs-beta /bin/sh
-```
+# Example: Memory Monitoring Test
+sudo ./engine start mem_kill ./rootfs-alpha /memory_hog 150 10
+Monitoring Resource Limits
+To see the kernel module in action (SS 5 & 6), monitor the kernel ring buffer:
 
----
-
-### 🔹 4. List Containers
-
-```bash
+Bash
+sudo dmesg -w | grep "container_monitor"
+Viewing Container Logs
+Bash
+sudo ./engine logs [container_name]
+Managing Processes
+Bash
+# List all running containers
 sudo ./engine ps
-```
+📊 Evaluation Scenarios
+Memory Enforcement (Screenshots 5 & 6)
+When a container running memory_hog exceeds the defined limits, the kernel module will log:
 
----
+[container_monitor] SOFT LIMIT: Logged when memory usage is significant.
 
-### 🔹 5. Run Workloads
+[container_monitor] HARD LIMIT: Logged just before the process is issued a SIGKILL.
 
-```bash
-sudo ./engine start cpu1 ../rootfs-alpha /cpu_hog
-sudo ./engine start io1 ../rootfs-beta /io_pulse
-```
+Priority Scheduling (Screenshot 7)
+By running two containers with different nice values, you can observe the difference in the accumulator values in the logs:
 
----
+High Priority (--nice -10): Higher accumulator (more CPU cycles).
 
-### 🔹 6. Check Logs
+Low Priority (--nice 19): Lower accumulator (fewer CPU cycles).
 
-```bash
-cat ../rootfs-beta/container.log
-```
+🧹 Teardown
+To stop the engine and all associated containers, navigate to the Supervisor terminal and press Ctrl+C. The engine is designed to:
 
----
+Identify all active child PIDs.
 
-### 🔹 7. Stop Containers
+Send SIGKILL to each.
 
-```bash
-sudo ./engine stop cpu1
-sudo ./engine stop io1
-```
+Unmount /proc filesystems.
 
----
+Remove the communication socket /tmp/mini_runtime.sock.
 
-## 🧪 Workloads
+Author: [Your Name / PES1UG24CS132]
 
-### 🔹 CPU-bound (`cpu_hog`)
+Course: Operating Systems Lab
 
-* Runs an infinite loop
-* Consumes high CPU
-
----
-
-### 🔹 IO-bound (`io_pulse`)
-
-* Prints output periodically
-* Uses `sleep()`
-* Lower CPU usage
-
----
-
-## 📊 Scheduling Experiment
-
-### Observation:
-
-* CPU-bound process → ~100% CPU usage
-* IO-bound process → low CPU usage
-
-### Conclusion:
-
-The Linux scheduler efficiently distributes CPU time based on process behavior, ensuring fairness.
-
----
-
-## 📸 Screenshots Included
-
-1. Build Success
-   <img width="759" height="262" alt="image" src="https://github.com/user-attachments/assets/37aa7d0e-e46b-471a-ab70-da6a97599e42" />
-
-2. Container Start
-<img width="916" height="112" alt="image" src="https://github.com/user-attachments/assets/02836471-0b63-4e73-a915-72a374a4d204" />
-
-3. Multi-Container (ps) Output
-<img width="900" height="94" alt="image" src="https://github.com/user-attachments/assets/296d7547-1bfb-4d3c-bd4e-a57cbbec1673" />
-
-4. CPU Workload Execution
-<img width="913" height="112" alt="image" src="https://github.com/user-attachments/assets/2e6f6c69-2839-4e67-a6db-5dab401fe75e" />
-
-5. IO Workload Execution
-<img width="902" height="73" alt="image" src="https://github.com/user-attachments/assets/972bd643-ecc1-46da-bfc7-8a2967418723" />
-
-6. Scheduling Experiment (top)
-<img width="741" height="163" alt="image" src="https://github.com/user-attachments/assets/8f1d5b7d-abb5-4aa9-a8d5-a5d23cc10b17" />
-<img width="740" height="449" alt="image" src="https://github.com/user-attachments/assets/2be06829-0882-4d18-9946-788bcd38aa00" />
-
-7. Logging (cat container.log)
-<img width="915" height="420" alt="image" src="https://github.com/user-attachments/assets/88f50533-0418-4951-ab86-cea13e54dff5" />
-
-8. Container Stop
-<img width="914" height="509" alt="image" src="https://github.com/user-attachments/assets/7689a8b3-0240-4489-8e0b-00d6d5e45fef" />
-<img width="383" height="504" alt="image" src="https://github.com/user-attachments/assets/4303813c-2067-40e6-b151-e6657fc0fb7b" />
-
-
----
-
-## ⚠️ Limitations
-
-* No namespace isolation
-* No IPC-based supervisor
-* Basic file-based container tracking
-* Limited security isolation
-
----
-
-## 💡 Future Enhancements
-
-* Implement namespaces (`clone()`)
-* Add IPC-based supervisor
-* Resource limits (CPU/Memory)
-* Advanced logging system
-* Network isolation
-
----
-
-## 🧠 Viva Preparation
-
-### 🔹 What is `chroot()`?
-
-Changes the root directory of a process, isolating filesystem access.
-
----
-
-### 🔹 Why use `fork()`?
-
-To create a new process for container execution.
-
----
-
-### 🔹 Why logging is needed?
-
-To track container output and debug execution.
-
----
-
-### 🔹 CPU vs IO bound?
-
-* CPU-bound → heavy computation
-* IO-bound → waits for IO operations
-
----
-
-### 🔹 Why compile inside container?
-
-To avoid GLIBC compatibility issues.
-
----
-
-## 🏁 Conclusion
-
-This project demonstrates the core concepts behind container runtimes. By using simple Linux primitives, we successfully implemented a basic multi-container system with logging and workload execution, providing a strong foundation for understanding modern container technologies.
-
----
-
-
-
+Date: April 2026

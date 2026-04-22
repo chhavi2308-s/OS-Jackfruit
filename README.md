@@ -111,13 +111,13 @@ dmesg | grep container_monitor | tail -5
 
 **Screenshot 4 — CLI command and supervisor response**
 <img width="771" height="388" alt="image" src="https://github.com/user-attachments/assets/9e7ccca9-c43e-4f3d-8ee9-2a3bb8b2a98f" />
-<img width="1862" height="264" alt="image" src="https://github.com/user-attachments/assets/b8ac9358-ab2c-4762-8f44-ecea7ace5f4b" />
+<img width="1608" height="246" alt="image" src="https://github.com/user-attachments/assets/160f07e2-ab55-4899-b684-ab4dd545dbea" />
 
 **Screenshot 5 — Soft limit warning in dmesg**
-<img width="1592" height="507" alt="image" src="https://github.com/user-attachments/assets/8f0ded6d-01a3-42c0-bde2-b9f55b8bcbd0" />
+<img width="1608" height="352" alt="image" src="https://github.com/user-attachments/assets/8ab0032b-344b-4cf6-acb1-2c8145a9ba9c" />
 
 **Screenshot 6 — Hard limit kill in dmesg**
-<img width="1592" height="507" alt="image" src="https://github.com/user-attachments/assets/a99a4bf8-b18d-4cf3-9c1d-4e565b18efac" />
+<img width="1608" height="352" alt="image" src="https://github.com/user-attachments/assets/8f909ec1-6bf4-4c27-88fe-e115e0fc3fb2" />
 
 **Screenshot 7 — Scheduler experiment results**
 
